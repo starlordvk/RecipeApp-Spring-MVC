@@ -5,13 +5,17 @@ import com.example.recipe.repositories.CategoryRepository;
 import com.example.recipe.repositories.RecipeRepository;
 import com.example.recipe.repositories.UnitOfMeasureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RecipeBootstrap {
+@Component
+public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent>{
     private final CategoryRepository categoryRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
     private final RecipeRepository recipeRepository;
@@ -27,42 +31,42 @@ public class RecipeBootstrap {
         List<Recipe> recipes=new ArrayList<>();
 
         //get UOMs
-        Optional<UnitOfMeasure> uomTeaspoonOptional=unitOfMeasureRepository.findByUom("Teaspoon");
+        Optional<UnitOfMeasure> uomTeaspoonOptional=unitOfMeasureRepository.findByDescription("Teaspoon");
         if(!uomTeaspoonOptional.isPresent()){
             throw new RuntimeException("Expected UOM not found");
         }
 
-        Optional<UnitOfMeasure> uomTablespoonOptional=unitOfMeasureRepository.findByUom("Teaspoon");
+        Optional<UnitOfMeasure> uomTablespoonOptional=unitOfMeasureRepository.findByDescription("Tablespoon");
         if(!uomTablespoonOptional.isPresent()){
             throw new RuntimeException("Expected UOM not found");
         }
 
-        Optional<UnitOfMeasure> uomPinchOptional=unitOfMeasureRepository.findByUom("Teaspoon");
+        Optional<UnitOfMeasure> uomPinchOptional=unitOfMeasureRepository.findByDescription("Pinch");
         if(!uomPinchOptional.isPresent()){
             throw new RuntimeException("Expected UOM not found");
         }
 
-        Optional<UnitOfMeasure> uomCupOptional=unitOfMeasureRepository.findByUom("Teaspoon");
+        Optional<UnitOfMeasure> uomCupOptional=unitOfMeasureRepository.findByDescription("Cup");
         if(!uomCupOptional.isPresent()){
             throw new RuntimeException("Expected UOM not found");
         }
 
-        Optional<UnitOfMeasure> uomOunceOptional=unitOfMeasureRepository.findByUom("Teaspoon");
+        Optional<UnitOfMeasure> uomOunceOptional=unitOfMeasureRepository.findByDescription("Ounce");
         if(!uomOunceOptional.isPresent()){
             throw new RuntimeException("Expected UOM not found");
         }
 
-        Optional<UnitOfMeasure> uomDashOptional=unitOfMeasureRepository.findByUom("Teaspoon");
+        Optional<UnitOfMeasure> uomDashOptional=unitOfMeasureRepository.findByDescription("Dash");
         if(!uomDashOptional.isPresent()){
             throw new RuntimeException("Expected UOM not found");
         }
 
-        Optional<UnitOfMeasure> uomEachOptional=unitOfMeasureRepository.findByUom("Teaspoon");
+        Optional<UnitOfMeasure> uomEachOptional=unitOfMeasureRepository.findByDescription("Each");
         if(!uomEachOptional.isPresent()){
             throw new RuntimeException("Expected UOM not found");
         }
 
-        Optional<UnitOfMeasure> uomPintOptional=unitOfMeasureRepository.findByUom("Teaspoon");
+        Optional<UnitOfMeasure> uomPintOptional=unitOfMeasureRepository.findByDescription("Pint");
         if(!uomPintOptional.isPresent()){
             throw new RuntimeException("Expected UOM not found");
         }
@@ -224,4 +228,8 @@ public class RecipeBootstrap {
     }
 
 
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        recipeRepository.saveAll(getRecipes());
+    }
 }
