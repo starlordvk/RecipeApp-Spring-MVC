@@ -45,9 +45,10 @@
                                 <div class="col-md-3 form-group">
                                     <label>UOM:</label>
                                     <select class="form-control" name="uom.id">
+                                        <!--/*@thymesVar id="uomEach" type="com.example.recipe.commands.UnitOfMeasureCommand"*/-->
                                         <option th:each="uomEach : ${uomList}"
                                                 th:value="${uomEach.id}"
-                                                th:selected="${uomEach.equals(ingredient.unitOfMeasure)}"
+                                                th:selected="${uomEach.id.equals(ingredient.unitOfMeasure.id)}"
                                                 th:text="${uomEach.description}">Each</option>
                                     </select>
                                 </div>
