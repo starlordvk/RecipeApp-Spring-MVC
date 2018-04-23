@@ -5,7 +5,6 @@ import com.example.recipe.converters.IngredientCommandToIngredient;
 import com.example.recipe.converters.IngredientToIngredientCommand;
 import com.example.recipe.model.Ingredient;
 import com.example.recipe.model.Recipe;
-import com.example.recipe.model.UnitOfMeasure;
 import com.example.recipe.repositories.RecipeRepository;
 import com.example.recipe.repositories.UnitOfMeasureRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -87,5 +86,29 @@ public class IngredientServiceImpl implements IngredientService {
         }
 
 
+    }
+
+    @Override
+    public void deleteIngredientCommandById(Long recipeId, Long id) {
+
+        log.debug("Deleting ingredient of recipe:"+recipeId+":"+id);
+
+        Optional<Recipe> optionalRecipe=recipeRepository.findById(recipeId);
+        if(optionalRecipe.isPresent()){
+            Recipe recipe=optionalRecipe.get();
+            log.debug("recipe found");
+            Optional<Ingredient> optionalIngredient=recipe.getIngredients().stream().filter(ingredient -> ingredient.getId().equals(id)).findFirst();
+            if(optionalIngredient.isPresent()){
+                log.debug("found ingredient");
+                Ingredient ingredientToDelete=optionalIngredient.get();
+                ingredientToDelete.setRecipe(null);
+                recipe.getIngredients().remove(optionalIngredient.get());
+                recipeRepository.save(recipe);
+            }
+        }
+        else
+        {
+            log.debug("recipe not found "+ recipeId);
+        }
     }
 }
