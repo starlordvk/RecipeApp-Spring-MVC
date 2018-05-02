@@ -10,8 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 
 @Slf4j
@@ -40,7 +43,14 @@ public class RecipeController {
 
     @PostMapping
     @RequestMapping("recipe/")
-    public String saveUpdate(@ModelAttribute RecipeCommand recipeCommand){
+    public String saveUpdate(@Valid @ModelAttribute("recipe")  RecipeCommand recipeCommand, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            bindingResult.getAllErrors().forEach(objectError -> {
+                log.debug(objectError.toString());
+            });
+
+            return "recipe/recipeform";
+        }
         RecipeCommand savedCommand=recipeService.saveRecipeCommand(recipeCommand);
         return "redirect:/recipe/"+savedCommand.getId()+"/show";
     }
